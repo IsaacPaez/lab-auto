@@ -1,103 +1,153 @@
-import Image from "next/image";
+'use client'
+import React, { useState, useRef } from 'react'
+import styles from './page.module.css'
 
-export default function Home() {
+export default function HomePage() {
+  /* 1. Modo de control */
+  const [mode, setMode] = useState<'Autosintonización'|'PID'|'Servosistema'>('Autosintonización')
+
+  /* 2. Nivel */
+  const [level, setLevel] = useState<number>(0)
+  const levelRef = useRef<HTMLInputElement>(null)
+  const gaugeRef = useRef<HTMLDivElement>(null)
+
+  /* 3. Alarmas refs */
+  const controlSignalRef = useRef<HTMLDivElement>(null)
+  const outOfRangeRef    = useRef<HTMLDivElement>(null)
+  const overLevelRef     = useRef<HTMLDivElement>(null)
+  const stableRef        = useRef<HTMLDivElement>(null)
+
+  /* 5. Temperatura deseada */
+  const [temperature, setTemperature] = useState<number>(0)
+
+  /* 6. Gráfica iframe */
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+
+  // TODO: conectar Firebase aquí para:
+  //   - actualizar levelRef.current.value y ajustar gaugeFill
+  //   - disparar/remover clase 'active' en cada alarmLabel
+  //   - cambiar la src del iframe con la URL de tu gráfica
+
+  const handleIncrease = () => setTemperature(t => Math.min(40, t + 1))
+  const handleDecrease = () => setTemperature(t => Math.max(0, t - 1))
+
+  const handleStart = () => {
+    // TODO: lógica Start
+  }
+  const handleStop = () => {
+    // TODO: lógica Stop
+  }
+  const handleEmergencyStop = () => {
+    // TODO: lógica Emergency Stop
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className={styles.dashboard}>
+      {/* Panel izquierdo */}
+      <div className={styles.leftPanel}>
+        {/* 1. Menú desplegable */}
+        <div className={styles.dropdownContainer}>
+          <label htmlFor="modeSelect">Modo:</label>
+          <select
+            id="modeSelect"
+            value={mode}
+            onChange={e => setMode(e.target.value as any)}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <option>Autosintonización</option>
+            <option>PID</option>
+            <option>Servosistema</option>
+          </select>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* 2. Indicador de nivel */}
+        <div className={styles.levelContainer}>
+          <label>Nivel:</label>
+          <input
+            type="text"
+            readOnly
+            value={String(level).padStart(3, '0')}
+            ref={levelRef}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          <div className={styles.gaugeContainer} ref={gaugeRef}>
+            <div
+              className={styles.gaugeFill}
+              style={{ height: `${(level / 40) * 100}%` }}
+            />
+            <div className={styles.gaugeMarks}>
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className={styles.mark}>
+                  {40 - i * 5}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Alarmas */}
+        <div className={styles.alarmsContainer}>
+          <div ref={controlSignalRef} className={styles.alarmLabel}>
+            Señal de control
+          </div>
+          <div ref={outOfRangeRef} className={styles.alarmLabel}>
+            Fuera de Rango
+          </div>
+          <div ref={overLevelRef} className={styles.alarmLabel}>
+            Sobre Nivel
+          </div>
+          <div ref={stableRef} className={styles.alarmLabel}>
+            Estado Estable
+          </div>
+        </div>
+
+        {/* 5. Temperatura deseada */}
+        <div className={styles.temperatureContainer}>
+          <label>Temperatura Deseada</label>
+          <div className={styles.tempControls}>
+            <button onClick={handleIncrease}>+</button>
+            <input
+              type="number"
+              value={temperature}
+              onChange={e => {
+                const v = parseInt(e.target.value) || 0
+                setTemperature(Math.max(0, Math.min(40, v)))
+              }}
+            />
+            <button onClick={handleDecrease}>−</button>
+          </div>
+          <div className={styles.thermometer}>
+            <div
+              className={styles.thermometerFill}
+              style={{ height: `${(temperature / 40) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* 4. Botones de control */}
+        <div className={styles.buttonsContainer}>
+          <button className={styles.startButton} onClick={handleStart}>
+            Start
+          </button>
+          <button className={styles.stopButton} onClick={handleStop}>
+            Stop
+          </button>
+          <button
+            className={styles.emergencyButton}
+            onClick={handleEmergencyStop}
+          >
+            Emergency Stop
+          </button>
+        </div>
+      </div>
+
+      {/* Panel derecho: placeholder para la gráfica */}
+      <div className={styles.rightPanel}>
+        <iframe
+          ref={iframeRef}
+          className={styles.graphFrame}
+          title="Gráfica en tiempo real"
+          src="about:blank"
+        />
+      </div>
     </div>
-  );
+  )
 }
