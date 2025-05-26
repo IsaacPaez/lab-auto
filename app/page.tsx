@@ -7,7 +7,7 @@ export default function HomePage() {
   const [mode, setMode] = useState<'Autosintonización' | 'PID' | 'Servosistema'>('Autosintonización')
 
   /* 2. Nivel */
-  const [level, _setLevel] = useState<number>(0)
+  const [level /* , setLevel */] = useState<number>(0)
   const levelRef = useRef<HTMLInputElement>(null)
   const gaugeRef = useRef<HTMLDivElement>(null)
 
