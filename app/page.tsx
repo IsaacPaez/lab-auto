@@ -3,11 +3,11 @@ import React, { useState, useRef } from 'react'
 import styles from './page.module.css'
 
 export default function HomePage() {
-  /* 1. Modo de control */
-  const [mode, setMode] = useState<'Autosintonización'|'PID'|'Servosistema'>('Autosintonización')
+  /* 1. Modo de operación */
+  const [mode, setMode] = useState<'Autosintonización' | 'PID' | 'Servosistema'>('Autosintonización')
 
   /* 2. Nivel */
-  const [level, setLevel] = useState<number>(0)
+  const [level, _setLevel] = useState<number>(0)
   const levelRef = useRef<HTMLInputElement>(null)
   const gaugeRef = useRef<HTMLDivElement>(null)
 
@@ -51,7 +51,9 @@ export default function HomePage() {
           <select
             id="modeSelect"
             value={mode}
-            onChange={e => setMode(e.target.value as any)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setMode(e.target.value as 'Autosintonización' | 'PID' | 'Servosistema')
+            }
           >
             <option>Autosintonización</option>
             <option>PID</option>
